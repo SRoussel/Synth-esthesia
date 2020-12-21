@@ -8,18 +8,13 @@
  * @author Sam Roussel
  */
 
+let buttonLabels = ['Start Audio Recording', 'Stop Audio Recording', 'Playback Audio', 'Save Audio',
+	'Toggle Note/Chord', 'Toggle Erase', 'Save Visual']
 let keys = ['a', 's', 'd', 'f', 'g', 'h', 'j']
-let music, visual, slider, inconsolata
+let music, visual, slider
 
 const MIN_STROKE = 1
 const MAX_STROKE = 20
-
-/**
- * Preloads fonts and other asynchronous processes; called before setup and draw.
- */
-function preload() {
-	inconsolata = loadFont('assets/inconsolata.ttf')
-}
 
 /**
  * Sets up the canvas, the music and visual classes, and creates UI elements.
@@ -29,14 +24,15 @@ function setup() {
 	music = new Music()
 	visual = new Visual()
 	slider = createSlider(MIN_STROKE, MAX_STROKE).style('width', '80px')
-	createButton('Start Audio Recording').mousePressed(music.startRecording)
-	createButton('Stop Audio Recording').mousePressed(music.stopRecording)
-	createButton('Playback Audio').mousePressed(music.playback)
-	createButton('Save Audio').mousePressed(music.save)
-	createButton('Toggle Note/Chord').mousePressed(music.togglePlayChords)
-	createButton('Toggle Erase').mousePressed(visual.toggleErase)
-	createButton('Save Visual').mousePressed(visual.save)
-	textFont(inconsolata)
+
+	let callbacks = [music.startRecording, music.stopRecording, music.playback, music.save, music.togglePlayChords,
+		visual.toggleErase, visual.save]
+
+	for (var i = 0; i < buttonLabels.length; ++i) {
+		makeButton(buttonLabels[i], callbacks[i])
+	}
+
+	textFont('monaco')
 	textSize(17)
 	textAlign(CENTER, CENTER)
 	text('Welcome! Interact with buttons at the bottom of the page to manage your recording.\
@@ -86,3 +82,13 @@ function keyTyped() {
 		visual.setColor(index)
 	}
 }
+
+/**
+ * Helper function to make a button.
+ */
+function makeButton(text, callback) {
+	let button = createButton(text)
+	button.mousePressed(callback)
+	button.style('font-family', 'monaco')
+}
+
